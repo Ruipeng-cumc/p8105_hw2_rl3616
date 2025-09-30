@@ -4,4 +4,16 @@ author: "Ruipeng Li"
 date: "`r format(Sys.Date())`"
 output: github_document
 ---
+```{r}
+library(tidyverse)
+```
 
+Clean the data in pols-month.csv.
+
+```{r}
+pols <- read_csv("data/pols-month.csv") |>
+  janitor::clean_names() |>
+  separate(mon, into = c("year", "month", "day"))
+
+pols
+```

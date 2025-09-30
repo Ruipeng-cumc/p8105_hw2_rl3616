@@ -4,16 +4,38 @@ author: "Ruipeng Li"
 date: "`r format(Sys.Date())`"
 output: github_document
 ---
+Loading packages. 
 ```{r}
 library(tidyverse)
 ```
 
+# Problem 1
+
+#### Part 1
 Clean the data in pols-month.csv.
 
 ```{r}
-pols <- read_csv("data/pols-month.csv") |>
+pols_df <- read_csv("data/pols-month.csv") |>
   janitor::clean_names() |>
-  separate(mon, into = c("year", "month", "day"))
+  separate(mon, into = c("year", "month", "day"), convert = TRUE) |>
+  mutate(month = month.name[month]) |>
+  mutate(president = ifelse(prez_gop == 1, "gop", "dem")) |>
+  select(-prez_gop, -prez_dem, -day)
+```
 
-pols
+Finished part one, let's looking at our new pols-month.
+
+```{r}
+pols_df
+```
+
+#### Part 2
+clean the data in snp.csv
+```{r}
+snp_df <- read_csv("data/snp.csv") |>
+  janitor::clean_names() |>
+  separate(date, into = c("month", "day", "year"), convert = TRUE) |>
+  mutate(month = month.name[month])
+
+snp_df
 ```

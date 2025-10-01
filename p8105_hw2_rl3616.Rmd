@@ -142,4 +142,23 @@ final_wheels <- bind_rows(mr, prof, gwyn) |>
 
 ```
 
+I successfully cleaned and combined the datasets for Mr. Trash Wheel, Professor Trash Wheel, and Gwynnda, resulting in a dataset containing `r nrow(final_wheels)` observations, with each row corresponding to a dumpster collection event.
 
+(I didn't delete the `day` column as in Problem 1, as the event records are daily. I retained the full `date` column for better visualization. I also debated whether to delete the original `year` and `month`, but for statistical convenience, I retained them.) 
+
+Key variables include the collection `date`, the `weight_tons` of trash collected,
+the number of `cigarette_butts`, `plastic_bottles`, and `sports_balls` (rounded to integers),
+as well as the estimated number of `homes_powered`.
+
+```{r}
+prof_total_weight <- final_wheels |>
+  filter(wheel == "Professor Trash Wheel") |>
+  summarise(total_weight = sum(weight_tons, na.rm = TRUE)) |>
+  pull(total_weight)
+
+gwyn_jun2022_cigs <- final_wheels |>
+  filter(wheel == "Gwynns Falls Trash Wheel", year == 2022, month == "June") |> 
+  summarise(total_cigrette_butts = sum(cigarette_butts, na.rm = TRUE)) |> 
+  pull(total_cigrette_butts)
+```
+Across all available data, Professor Trash Wheel collected a total of `r round(prof_total_weight, 1)` tons of trash. In June 2022, Gwynnda collected `r format(gwyn_jun2022_cigs, big.mark = ",")` cigarette butts.

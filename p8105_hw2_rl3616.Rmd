@@ -7,6 +7,7 @@ output: github_document
 Loading packages. 
 ```{r}
 library(tidyverse)
+library(lubridate)      #to use parse_date_time
 ```
 
 # Problem 1
@@ -18,8 +19,10 @@ Clean the data in pols-month.csv.
 pols_df <- read_csv("data/pols-month.csv") |>
   janitor::clean_names() |>
   separate(mon, into = c("year", "month", "day"), convert = TRUE) |>
-  mutate(month = month.name[month]) |>
-  mutate(president = ifelse(prez_gop == 1, "gop", "dem")) |>
+  mutate(
+    month = month.name[month],
+    president = ifelse(prez_gop == 1, "gop", "dem")
+    ) |>
   select(-prez_gop, -prez_dem, -day)
 ```
 
@@ -31,11 +34,17 @@ pols_df
 
 #### Part 2
 clean the data in snp.csv
+This is pretty complicate since we both have yyyy/m/d type of date and m/d/yy
+
 ```{r}
 snp_df <- read_csv("data/snp.csv") |>
   janitor::clean_names() |>
-  separate(date, into = c("month", "day", "year"), convert = TRUE) |>
-  mutate(month = month.name[month])
+  mutate(date = parse_date_time(date, orders = c("ymd", "mdy"))) |>     
+  separate(date, into = c("year", "month", "day"), convert = TRUE) |>
+  mutate(year  = if_else(year > 2015, year - 100L, year))
+```
 
+I found "parse_date_time()" in lubridate package can both help me clean the "ymd" and "mdy" into "y-m-d" type, and arrange and organize the data, I don't know is that always happens? but I'm feeling complicate in using "skip" and something more like part one. 
+```{r}
 snp_df
 ```

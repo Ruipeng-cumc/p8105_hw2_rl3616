@@ -8,6 +8,8 @@ Loading packages.
 ```{r}
 library(tidyverse)
 library(lubridate)      #to use parse_date_time
+library(readxl)         #for problem 2
+library(dplyr)          #filter
 ```
 
 # Problem 1
@@ -24,7 +26,7 @@ pols_df <- read_csv("data/pols-month.csv") |>
     president = ifelse(prez_gop == 1, "gop", "dem")
     ) |>
   select(-prez_gop, -prez_dem, -day) |> 
-  arrange(year, factor(month, levels = tolower(month.name)))   #Old data to new data
+  arrange(year, factor(month, levels = month.name))   #Old data to new data
 ```
 
 Finished part one, let's looking at our new pols-month.
@@ -40,14 +42,14 @@ This is pretty complicate since we both have yyyy/m/d type of date and m/d/yy
 ```{r}
 snp_df <- read_csv("data/snp.csv") |>
   janitor::clean_names() |>
-  mutate(date = parse_date_time(date, orders = c("ymd", "mdy"))) |>     
+  mutate(date = parse_date_time(date, orders = c("ymd", "mdy"))) |>     #in this way I don't need to relocate()
   separate(date, into = c("year", "month", "day"), convert = TRUE) |>
   mutate(
     year  = if_else(year > 2015, year - 100L, year),
     month = month.name[month]
     ) |> 
   select(-day) |> 
-  arrange(year, factor(month, levels = tolower(month.name)))   #Old data to new data
+  arrange(year, factor(month, levels = month.name))   #Old data to new data
 ```
 
 I found "parse_date_time()" in lubridate package can both help me clean the "ymd" and "mdy" into "y-m-d" type, and arrange and organize the data, I don't know is that always happens? but I'm feeling complicate in using "skip" and something more like part one. 
@@ -68,8 +70,7 @@ unemp_df <- read_csv("data/unemployment.csv") |>
   mutate(
     month = month.name[match(month, tolower(month.abb))]       #Use tolower() to match the month in lowercase.
   ) |>
-  select(year, month, unemployment) |>
-  arrange(year, factor(month, levels = tolower(month.name)))   #Old data to new data
+  arrange(year, factor(month, levels = month.name))   #Old data to new data
 ```
 
 
@@ -83,14 +84,6 @@ unemp_df
 final_df <- pols_df |>
   left_join(snp_df, by = c("year","month")) |>
   left_join(unemp_df, by = c("year","month"))
-
-
-knitr::kable(head(final_df, 20))      #Just checking our data.
-
-final_df <- final_df |>
-  arrange(desc(year), desc(month))
-
-knitr::kable(head(final_df, 20))      #Checking from new to old data.
 ```
 
 #### Conclusion
@@ -103,3 +96,50 @@ The ```unemployment``` table represents the US unemployment rate.
 We merged and then split the year and month data into the ```final_df``` table. This allows us to compare presidential party, stock market performance, and unemployment rates for a specific year and month, making it ideal for studying the relationship between politics, the economy, and employment.
 
 The dataset spans 1947–2015 and covers many important historical events, such as the 1973–1975 oil crisis, the 1981–1982 recession, the 2000 dot-com bubble, and the 2007–2009 Great Recession. Therefore, this dataset provides significant reference value for studying the relationships between politics, the economy, and employment.
+
+# Problem 2
+```{r}
+path_trash <- "data/202509 Trash Wheel Collection Data.xlsx"
+
+mr <- read_excel(path_trash, sheet = "Mr. Trash Wheel", skip=1, range = cell_cols("A:N"))
+prof <- read_excel(path_trash, sheet = "Professor Trash Wheel", skip=1, range = cell_cols("A:M"))
+gwyn <- read_excel(path_trash, sheet = "Gwynns Falls Trash Wheel", skip=1, range = cell_cols("A:L"))
+
+mr <- mr |> 
+  janitor::clean_names() |> 
+  filter(!is.na(dumpster)) |> 
+  mutate(
+    wheel = "Mr. Trash Wheel",
+    date = ymd(date), 
+    year  = as.integer(year(date)),
+    month = month.name[month(date)],                                           #in order to unify data
+    sports_balls = as.integer(round(sports_balls, 0))
+    ) 
+
+prof <- prof |> 
+  janitor::clean_names() |> 
+  filter(!is.na(dumpster)) |> 
+  mutate(
+    wheel = "Professor Trash Wheel",
+    date = ymd(date),
+    year  = as.integer(year(date)),
+    month = month.name[month(date)],                                           #in order to unify data
+    ) 
+
+gwyn <- gwyn |> 
+  janitor::clean_names() |> 
+  filter(!is.na(dumpster)) |> 
+  mutate(
+    wheel = "Gwynns Falls Trash Wheel",
+    date = ymd(date),
+    year  = as.integer(year(date)),
+    month = month.name[month(date)],                                           #in order to unify data
+    ) 
+
+final_wheels <- bind_rows(mr, prof, gwyn) |>
+  arrange(date) |> 
+  relocate("wheel","dumpster")
+
+```
+
+

@@ -5,7 +5,7 @@ date: "`r format(Sys.Date())`"
 output: github_document
 ---
 Loading packages. 
-```{r}
+```{r, message=FALSE, warning=FALSE}
 library(tidyverse)
 library(lubridate)      #to use parse_date_time
 library(readxl)         #for problem 2
@@ -17,7 +17,7 @@ library(dplyr)          #filter
 #### Part 1
 Clean the data in pols-month.csv.
 
-```{r}
+```{r, message=FALSE, warning=FALSE}
 pols_df <- read_csv("data/pols-month.csv") |>
   janitor::clean_names() |>
   separate(mon, into = c("year", "month", "day"), convert = TRUE) |>
@@ -39,7 +39,7 @@ pols_df
 clean the data in snp.csv
 This is pretty complicate since we both have yyyy/m/d type of date and m/d/yy
 
-```{r}
+```{r, message=FALSE, warning=FALSE}
 snp_df <- read_csv("data/snp.csv") |>
   janitor::clean_names() |>
   mutate(date = parse_date_time(date, orders = c("ymd", "mdy"))) |>     #in this way I don't need to relocate()
@@ -59,7 +59,7 @@ snp_df
 
 #### Part 3
 clean the data in unemployment.csv
-```{r}
+```{r, message=FALSE, warning=FALSE}
 unemp_df <- read_csv("data/unemployment.csv") |>
   janitor::clean_names() |>
   pivot_longer(
@@ -164,7 +164,7 @@ gwyn_jun2022_cigs <- final_wheels |>
 Across all available data, Professor Trash Wheel collected a total of `r round(prof_total_weight, 1)` tons of trash. In June 2022, Gwynnda collected `r format(gwyn_jun2022_cigs, big.mark = ",")` cigarette butts.
 
 # Problem 3
-```{r}
+```{r, message=FALSE, warning=FALSE}
 zip_zori_df <- read_csv("data/Zip_zori_uc_sfrcondomfr_sm_month_NYC.csv") |> 
   janitor::clean_names() |>
   rename(zip_code = region_name) |> 
@@ -184,7 +184,7 @@ zip_zori_df <- read_csv("data/Zip_zori_uc_sfrcondomfr_sm_month_NYC.csv") |>
 
 I deleted all the `region_type`, `state_name`, `state`, `city`, and `metro` column since they are with same variable useless in comparing two datasets. 
 
-```{r}
+```{r, message=FALSE, warning=FALSE}
 zip_codes_df <- read_csv("data/Zip Codes.csv") |> 
   janitor::clean_names() |>
   rename(county_name = county) |> 
@@ -266,3 +266,7 @@ knitr::kable(covid_comp_df)
 ```
 
 As we can see, rents in Lower Manhattan (ZIP 10007) showed the largest decline, dropping by about `r round(abs(covid_comp_df$drop[1]), 0)` dollars per month from January 2020 to January 2021. Other substantial declines also occurred in densely populated Manhattan neighborhoods, where high turnover and a reliance on rental apartments amplified the effects of the pandemic. This pattern is consistent with remote work policies and outmigration during COVID-19, which sharply reduced demand for central-city housing.
+
+#### Little question
+Should I delete all the temporary data(like jan2020_df, zips_in_zori) and only leave the main data(like dfs. final_wheels, new_york_zori) in the environment?
+Thank you so much!

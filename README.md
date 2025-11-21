@@ -11,8 +11,8 @@ by importing **Zillow Observed Rent Index (ZORI)** data and **ZIP–borough–ne
 
 ## Cleaned dataset:  
 
-[**FiveThirtyEight political polls & Unemployment (CSV)**](./FiveThirtyEight political polls & Unemployment.csv)  
-[**Wheels dumpster by time 2014-2025 (CSV)**](./Wheels dumpster by time 2014-2025.csv)  
-[**NYC ZORI Panel Dataset (CSV)**](./NYC Zori panel dataset.csv)  
+[**FiveThirtyEight political polls & Unemployment (CSV)**](./FiveThirtyEight%20political%20polls%20%26%20Unemployment.csv)  
+[**Wheels dumpster by time 2014-2025 (CSV)**](./Wheels%20dumpster%20by%20time%202014-2025.csv)  
+[**NYC ZORI Panel Dataset (CSV)**](./NYC%20Zori%20panel%20dataset.csv)
 
 [Cleaning process and analysis](p8105_hw2_rl3616.Rmd)

@@ -1,7 +1,7 @@
 ---
-title: "p8105_hw2_rl3616"
+title: "Real-World Panel Data Cleaning"
 author: "Ruipeng Li"
-date: "`r format(Sys.Date())`"
+date: "Oct, 1, 2025"
 output: github_document
 ---
 Loading packages. 
@@ -12,7 +12,7 @@ library(readxl)         #for problem 2
 library(dplyr)          #filter
 ```
 
-# Problem 1
+# FiveThirtyEight polls
 
 #### Part 1
 Clean the data in pols-month.csv.
@@ -97,7 +97,7 @@ We merged and then split the year and month data into the ```final_df``` table. 
 
 The dataset spans 1947–2015 and covers many important historical events, such as the 1973–1975 oil crisis, the 1981–1982 recession, the 2000 dot-com bubble, and the 2007–2009 Great Recession. Therefore, this dataset provides significant reference value for studying the relationships between politics, the economy, and employment.
 
-# Problem 2
+# Trash Wheels  
 ```{r}
 path_trash <- "data/202509 Trash Wheel Collection Data.xlsx"
 
@@ -163,7 +163,7 @@ gwyn_jun2022_cigs <- final_wheels |>
 ```
 Across all available data, Professor Trash Wheel collected a total of `r round(prof_total_weight, 1)` tons of trash. In June 2022, Gwynnda collected `r format(gwyn_jun2022_cigs, big.mark = ",")` cigarette butts.
 
-# Problem 3
+# Zillow ZORI  
 ```{r, message=FALSE, warning=FALSE}
 zip_zori_df <- read_csv("data/Zip_zori_uc_sfrcondomfr_sm_month_NYC.csv") |> 
   janitor::clean_names() |>
@@ -267,6 +267,8 @@ knitr::kable(covid_comp_df)
 
 As we can see, rents in Lower Manhattan (ZIP 10007) showed the largest decline, dropping by about `r round(abs(covid_comp_df$drop[1]), 0)` dollars per month from January 2020 to January 2021. Other substantial declines also occurred in densely populated Manhattan neighborhoods, where high turnover and a reliance on rental apartments amplified the effects of the pandemic. This pattern is consistent with remote work policies and outmigration during COVID-19, which sharply reduced demand for central-city housing.
 
-#### Little question
-Should I delete all the temporary data(like jan2020_df, zips_in_zori) and only leave the main data(like dfs. final_wheels, new_york_zori) in the environment?
-Thank you so much!
+```{r}
+write_csv(final_df, "FiveThirtyEight political polls & Unemployment.csv")
+write_csv(final_wheels, "Wheels dumpster by time 2014-2025.csv")
+write_csv(new_york_zori, "NYC Zori panel dataset.csv")
+```
